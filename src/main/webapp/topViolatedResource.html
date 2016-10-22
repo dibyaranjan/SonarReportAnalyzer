@@ -1,0 +1,17 @@
+<div class="new-container new-container-red-border">
+    <div class="box-header with-border">
+        <h3 class="container-title">Top violated resources</h3>
+        <div class="box-tools"></div>
+    </div>
+    <img id="loadingViolatedResources" class="loading" alt="loading"
+        src="img/ajax-loader.gif" />
+    <table class="table table-hover" data-toggle="modal"
+        data-target="#modal">
+        <tr data-ng-repeat="resource in violatedResources"
+            data-ng-click="showViolationsOfResource(resource)">
+            <td  class = "cursor" data-ng-bind="resource.resourcePath | getFileNameFromFullPath"></td>
+            <td data-ng-bind="resource.count"></td>
+        </tr>
+    </table>
+    <p></p>
+</div>

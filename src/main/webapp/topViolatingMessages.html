@@ -1,0 +1,12 @@
+<div class="new-container new-container-red-border">
+    <div class="box-header with-border">
+        <h3 class="container-title">Top violated messages</h3>
+        <div class="box-tools"></div>
+    </div>
+    <table class="table table-hover col-sm-12">
+        <tr data-ng-repeat="message in violatedMessages">
+            <td  class = "cursor" data-ng-bind="message.message"></td>
+            <td data-ng-bind="message.count"></td>
+        </tr>
+    </table>
+</div>

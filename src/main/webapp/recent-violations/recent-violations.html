@@ -1,0 +1,25 @@
+  <div class= "new-container new-container-red-border">
+    <div class="box-header with-border">
+        <h3 class="container-title">Recent Violations</h3>
+        <div class="box-tools"></div>
+    </div>
+    <table class="table table-hover col-sm-12">
+        <thead>
+            <tr>
+                <th>Date Introduced</th>
+                <th>File Name</th>
+                <th>Severity</th>
+                <th>Developer</th>
+                <th class = "text-right">Line number</th>
+            </tr>
+        </thead>
+        <tr data-ng-repeat="violation in recentViolations | addPagination : 1 : 5">
+            <td data-ng-bind="violation.dateIntroduced"></td>
+            <td data-ng-bind="violation.resource.resourceName|getFileNameFromFullPath"></td>
+            <td data-ng-bind="violation.severity"></td>
+            <td data-ng-bind="violation.author"></td>
+            <td class = "text-right" data-ng-bind="violation.lineNumber"></td>
+        </tr>
+    </table>
+</div>
+                

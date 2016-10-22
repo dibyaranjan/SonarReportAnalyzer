@@ -1,0 +1,88 @@
+<div class="new-container new-container-blue-border">
+    <div class="box-header with-border">
+        <h3 class="container-title">Open issues by severity</h3>
+        <div class="box-tools"></div>
+    </div>
+    <div class="box-body col-sm-12" data-ng-repeat="severity in severities">
+        <div class="severity-boxes" data-ng-class="severity.name"
+            data-ng-click="listResourcesForSeverity(severity.name)"
+            data-toggle="modal" data-target="#filteredIssues">
+            <span class="severity-type" data-ng-bind="severity.name | camelCase"></span>
+            <span class="severity-count" data-ng-bind="severity.count"></span>
+            <div class="progress">
+                <div class="progress-bar"
+                    data-ng-style="{'width' : severity.percentage + '%'}"></div>
+            </div>
+            <span class="progress-description"><span
+                data-ng-bind="severity.percentage"></span>%</span>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" tabindex="-1" id="filteredIssues" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title col-sm-4"><span data-ng-bind="currentSeverity | camelCase"></span> Issue dril down for </h4>
+                <div class="dropdown modal-heading-dropdown col-sm-7">
+                    <button class="btn btn-primary dropdown-toggle" type="button"
+                        id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true"
+                        aria-expanded="true">
+                    <span data-ng-bind="currentResource | getFileNameFromFullPath"></span> 
+                    <span class="caret"></span>
+                    <span class="sr-only">Toggle Dropdown</span>
+                    </button>
+                    <ul class="dropdown-menu resources-list" aria-labelledby="dropdownMenu1">
+                        <li data-ng-repeat="resource in resources">
+                            <a id="resource-{{resource.resourceId}}" href="#" data-ng-click="getAllIssuesFor(resource, currentSeverity)"> 
+                                <span data-ng-bind="(resource.resourceName | getFileNameFromFullPath)"></span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="modal-body row col-sm-12">
+                <table id="violationsByResourceName" class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th class="col-sm-1 col-md-1">
+                                <a href="#">Line Number</a>
+                            </th>
+                            <th class="col-sm-2 col-md-2">
+                                <a href="#">Date introduced</a>
+                            </th>
+                            <th class="col-sm-1 col-md-1">
+                                <a href="#">Status</a>
+                            </th>
+                            <th class="col-sm-3 col-md-3">
+                                <a href="#">Author</a>
+                            </th>
+                            <th class="col-sm-5 col-md-5">
+                                <a href="#">Message</a>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr data-ng-repeat="violation in violationsInReport | addPagination : currentIssuesPage : 10">
+                            <td data-ng-bind="violation.lineNumber"></td>
+                            <td data-ng-bind="violation.dateIntroduced"></td>
+                            <td data-ng-bind="violation.status"></td>
+                            <td data-ng-bind="violation.author"></td>
+                            <td data-ng-bind="violation.message"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <div class="footer-nav">
+                    <a href="#" class="glyphicon glyphicon-chevron-left disabled" data-ng-if="currentIssuesPage <= 1"></a> 
+                    <a href="#" class="glyphicon glyphicon-chevron-left" data-ng-click="previousPage()" data-ng-if="currentIssuesPage > 1"></a>
+                    Page <span data-ng-bind="currentIssuesPage"></span> of <span data-ng-bind="totalIssuesPages"></span> 
+                    <a href="#" class="glyphicon glyphicon-chevron-right disabled" data-ng-if="currentIssuesPage == totalIssuesPages"></a> 
+                    <a href="#" class="glyphicon glyphicon-chevron-right" data-ng-click="nextPage()" data-ng-if="currentIssuesPage < totalIssuesPages"></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,65 @@
+<div class="new-container new-container-blue-border">
+    <div class="box-header with-border">
+        <h3 class="container-title">Violation per developer</h3>
+        <div class="box-tools"></div>
+    </div>
+    <table class="table table-hover col-sm-12">
+        <tr data-ng-repeat="violation in violationsForAllDevelopers" data-ng-click="showIssuesForDeveloper(violation.label)" data-toggle="modal" data-target="#filteredIssuesByDeveloper">
+            <td  class = "cursor" data-ng-bind="violation.label"></td>
+            <td data-ng-bind="violation.count"></td>
+        </tr>
+    </table>
+</div>
+
+<div class="modal fade" id="filteredIssuesByDeveloper" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Issue dril down of severity <span data-ng-bind="currentSeverity | camelCase"></span></h4>
+            </div>
+            <div class="modal-body row col-sm-12">	            
+                <div id = "resource-list" class="modal-list-view col-sm-5">
+                    <div class="list-group">
+                        <a id = "resource-{{resource.resourceId}}" href="#" class="list-group-item"
+                            data-ng-repeat="resource in resources"
+                            data-ng-click="getAllIssuesFor(resource.resourceId, currentSeverity)">
+                             <span class="badge"></span>
+                          <span data-ng-bind="(resource.resourceName | getFileNameFromFullPath)"></span>
+                          
+                        </a>
+                            
+                    </div>
+                </div>
+                
+                <div class="col-sm-7">
+                    <table id="violationsByResourceName" class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th class="col-sm-1 col-md-1"><a href = "#">Line Number</a></th>
+                                <th class="col-sm-2 col-md-2"><a href = "#">Date introduced</a></th>
+                                <th class="col-sm-1 col-md-1"><a href = "#">Status</a></th>
+                                <th class="col-sm-3 col-md-3"><a href = "#">Author</a></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr data-ng-repeat="violations in violationsInReport | addPagination : currentIssuesPage : 10">
+                                <td class="col-sm-1 col-md-1" data-ng-bind="violations.lineNumber"></td>
+                                <td class="col-sm-2 col-md-2" data-ng-bind="violations.dateIntroduced"></td>
+                                <td class="col-sm-1 col-md-1" data-ng-bind="violations.status"></td>
+                                <td class="col-sm-3 col-md-3" data-ng-bind="violations.author"></td>
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+            <p>Showing page <span data-ng-bind="currentIssuesPage"></span> of <span data-ng-bind="totalIssuesPages"></span></p>
+                        <button type="button" class="btn btn-primary"  data-ng-click="previousPage()" data-ng-disabled="currentIssuesPage <= 1">Prev</button>
+                        <button type="button" class="btn btn-primary"  data-ng-click="nextPage()" data-ng-disabled="currentIssuesPage == totalIssuesPages">Next</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="ISO-8859-1">
+        <title>Sonar Report | Dashboard</title>
+        <link href="libs/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <link href="css/sonar.css" rel="stylesheet" />
+    </head>
+    <body data-ng-app="CustomRouter">
+        <nav class="navbar navbar-inverse navbar-fixed-top" data-ng-controller="NavBarController">
+            <div class="container">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="#">Sonar Report</a>
+                </div>
+                <div id="navbar" class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a href="#" class = "glyphicon glyphicon-refresh" data-ng-click="syncIssuesFromSonar()"></a></li>
+                        <li><a href="#" data-ng-click=""><span class="glyphicon glyphicon-cog"></span></a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <div class="container top-div">
+            <div class="row">
+                <div class = "col-sm-12 col-md-9">
+                    <div class="col-sm-12 col-md-12">
+                        <div data-ui-view="recentViolations"></div>
+                    </div>
+                    
+                    <div class="col-sm-6 col-md-6">
+                        <div data-ui-view="violationStats"></div>
+                    </div>
+                
+                    <div class="col-sm-12 col-md-6">
+                    <div data-ui-view="developerViolations"></div>
+                    </div>
+                </div>
+                
+                <div class="col-sm-12 col-md-3">
+                    <div data-ui-view="severity"></div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-7">
+                </div>
+                <div class="col-md-5">
+                    
+                </div>
+            </div>
+        </div>
+        <hr>
+        <footer>
+            <p>© 2016 Company, Inc.</p>
+        </footer>
+    </body>
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="libs/jquery/jquery-2.1.4.min.js"></script>
+    <script src="libs/angular/angular.min.js"></script>
+    <script src="libs/angular/angular-ui-router.min.js"></script>
+    <script src="libs/bootstrap/js/bootstrap.min.js"></script>
+    
+    <script src="js/dashboard/controller.js"></script>
+    <script src="js/dashboard/filter.js"></script>
+    <script src="js/dashboard/service.js"></script>
+    
+    <script src="recent-violations/recent-violations-controller.js"></script>
+    <script src="recent-violations/recent-violations-service.js"></script>
+    
+    <script src="severity-tile/severity-summary-controller.js"></script>
+    <script src="severity-tile/severity-summary-service.js"></script>
+    
+    <script src="developer-tile/developer-violation-controller.js"></script>
+    <script src="developer-tile/developer-violation-service.js"></script>
+    
+    <script src="violation-status/violation-status-controller.js"></script>
+    <script src="violation-status/violation-status-service.js"></script>
+    
+    <script src="https://www.gstatic.com/charts/loader.js"></script>
+    <script src="js/dashboard/routes.js"></script>
+    <script type="text/javascript">
+        google.charts.load('current', {'packages' : [ 'bar', 'corechart' ] });
+    </script>
+</html>
