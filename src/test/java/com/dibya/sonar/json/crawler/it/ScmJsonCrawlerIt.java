@@ -46,12 +46,4 @@ public class ScmJsonCrawlerIt {
 
         Assert.assertNull("Invalid port should be null", json);
     }
-
-    @Test
-    public void testSyncWithValidUrl() {
-        ScmDetails json = scmCrawler.retrieveJsonContentFromUrl(
-                "http://localhost:9000/api/sources/scm?key=AuditTool:AuditTool:src/main/java/com/sita/audit/tool/controller/EntitiesController.java");
-
-        Assert.assertNotNull("Sync should be successful", json);
-    }
 }
