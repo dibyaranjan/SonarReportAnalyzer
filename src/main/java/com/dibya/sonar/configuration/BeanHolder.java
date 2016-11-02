@@ -6,7 +6,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 
-import com.dibya.sonar.cache.BlameDetailCache;
+import com.dibya.sonar.cache.ViolationDetailsCache;
 import com.dibya.sonar.cache.SourceFileCache;
 import com.dibya.sonar.converter.BaseConverter;
 import com.dibya.sonar.converter.ConverterFactory;
@@ -36,8 +36,8 @@ public class BeanHolder {
 
     @Bean
     @Scope(value = "singleton")
-    public BlameDetailCache getBlameDetailCache() {
-        BlameDetailCache blameDetailCache = new BlameDetailCache();
+    public ViolationDetailsCache getBlameDetailCache() {
+        ViolationDetailsCache blameDetailCache = new ViolationDetailsCache();
         blameDetailCache.setPersister(persister);
         blameDetailCache.setConverter(baseConverter);
         blameDetailCache.setSourceFileCache(getSonarReportCache());

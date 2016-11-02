@@ -11,10 +11,10 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.dibya.sonar.cache.BlameDetailCache;
+import com.dibya.sonar.cache.ViolationDetailsCache;
 import com.dibya.sonar.entity.StatusType;
 import com.dibya.sonar.entity.vo.GenericCountHolder;
-import com.dibya.sonar.entity.vo.ViolationDetail;
+import com.dibya.sonar.entity.vo.ViolationDetails;
 import com.dibya.sonar.service.UserService;
 
 /**
@@ -24,13 +24,13 @@ import com.dibya.sonar.service.UserService;
 @Service
 public class UserServiceUsingCache implements UserService {
     @Autowired
-    private BlameDetailCache cache;
+    private ViolationDetailsCache cache;
     
     @Override
     public List<GenericCountHolder> getUsersWithViolationCount() {
-        List<ViolationDetail> allBlameDetails = cache.getAllBlameDetails();
+        List<ViolationDetails> allBlameDetails = cache.getAllBlameDetails();
         Map<String, Integer> violationCounts = new TreeMap<>();
-        for (ViolationDetail violationDetail: allBlameDetails) {
+        for (ViolationDetails violationDetail: allBlameDetails) {
             setViolationCount(violationCounts, violationDetail.getAuthor());
         }
         
@@ -57,10 +57,10 @@ public class UserServiceUsingCache implements UserService {
     }
 
     @Override
-    public List<ViolationDetail> getViolationsForUser(String userId) {
-        List<ViolationDetail> allViolationDetails = cache.getAllBlameDetails();
-        List<ViolationDetail> filteredViolationDetails = new LinkedList<>();
-        for (ViolationDetail ViolationDetail : allViolationDetails) {
+    public List<ViolationDetails> getViolationsForUser(String userId) {
+        List<ViolationDetails> allViolationDetails = cache.getAllBlameDetails();
+        List<ViolationDetails> filteredViolationDetails = new LinkedList<>();
+        for (ViolationDetails ViolationDetail : allViolationDetails) {
             if (StringUtils.equals(ViolationDetail.getAuthor(), userId)) {
                 filteredViolationDetails.add(ViolationDetail);
             }
@@ -70,13 +70,13 @@ public class UserServiceUsingCache implements UserService {
     }
 
     @Override
-    public List<ViolationDetail> getViolationsForUser(String userId, String status) {
+    public List<ViolationDetails> getViolationsForUser(String userId, String status) {
         StatusType statusType = StatusType.getStatus(status);
         
-        List<ViolationDetail> violationDetailsForUser  = getViolationsForUser(userId);
+        List<ViolationDetails> violationDetailsForUser  = getViolationsForUser(userId);
         
-        List<ViolationDetail> filteredViolationDetails = new LinkedList<>();
-        for (ViolationDetail violationDetail : violationDetailsForUser) {
+        List<ViolationDetails> filteredViolationDetails = new LinkedList<>();
+        for (ViolationDetails violationDetail : violationDetailsForUser) {
             if (statusType.equals(violationDetail.getStatus())) {
                 filteredViolationDetails.add(violationDetail);
             }

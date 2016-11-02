@@ -1,7 +1,6 @@
 package com.dibya.sonar.converter.adapter;
 
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -9,16 +8,15 @@ import org.apache.log4j.Logger;
 
 import com.dibya.sonar.converter.AbstractConverter;
 import com.dibya.sonar.entity.vo.Issue;
-import com.dibya.sonar.entity.vo.IssueVo;
+import com.dibya.sonar.entity.vo.Issues;
 import com.dibya.sonar.entity.vo.Page;
 import com.dibya.sonar.entity.vo.Project;
 import com.dibya.sonar.entity.vo.SonarRuleVo;
-import com.dibya.sonar.entity.vo.wrapper.IssueVoListWrapper;
 
-public class IssueVoListWrapperFromPageConverter extends AbstractConverter {
-    private static final Logger LOGGER = Logger.getLogger(IssueVoListWrapperFromPageConverter.class);
+public class IssuesFromPageConverter extends AbstractConverter {
+    private static final Logger LOGGER = Logger.getLogger(IssuesFromPageConverter.class);
     
-    public IssueVoListWrapperFromPageConverter() {
+    public IssuesFromPageConverter() {
         LOGGER.info("Registered " + getClass());
     }
     
@@ -27,11 +25,12 @@ public class IssueVoListWrapperFromPageConverter extends AbstractConverter {
     protected <T, S> T doConvert(S sourceObject) {
         Page source = (Page) sourceObject;
         Page head = source;
-
-
+        
         Map<String, SonarRuleVo> ruleTable = new LinkedHashMap<>();
-        List<IssueVo> issueVoList = new LinkedList<>();
 
+        Issues target = null;
+        Issues currentIssue = null;
+        
         while (head != null) {
             List<SonarRuleVo> rules = head.getRules();
             for (SonarRuleVo sonarRule : rules) {
@@ -43,7 +42,7 @@ public class IssueVoListWrapperFromPageConverter extends AbstractConverter {
 
             List<Issue> sonarIssues = head.getSonarIssues();
             for (Issue issue : sonarIssues) {
-                IssueVo issueVo = new IssueVo();
+                Issues issueVo = new Issues();
                 convertIssue(issueVo, issue);
                 
                 Project project = new Project();
@@ -51,18 +50,21 @@ public class IssueVoListWrapperFromPageConverter extends AbstractConverter {
                 
                 issueVo.setRule(ruleTable.get(issue.getRuleName()));
                 
-                issueVoList.add(issueVo);
+                if (currentIssue == null) {
+                	target = issueVo;
+                	currentIssue = issueVo;
+                } else {
+                	currentIssue.setIssueVo(issueVo);
+                	currentIssue = currentIssue.getIssueVo();
+                }
             }
-
             head = head.getNextPage();
         }
 
-        IssueVoListWrapper target = new IssueVoListWrapper();
-        target.setIssueVoList(issueVoList);
         return (T) target;
     }
 
-    private void convertIssue(IssueVo target, Issue issue) {
+    private void convertIssue(Issues target, Issue issue) {
         target.setComponent(issue.getComponent());
         target.setKey(issue.getKey());
         target.setLine(issue.getLine());

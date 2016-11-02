@@ -4,7 +4,7 @@ import com.dibya.sonar.entity.SeverityType;
 import com.dibya.sonar.entity.SonarRule;
 import com.dibya.sonar.entity.StatusType;
 
-public class ViolationDetail {
+public class ViolationDetails {
     private Resource resource;
     private int lineNumber;
     private String dateIntroduced;
@@ -13,6 +13,8 @@ public class ViolationDetail {
     private String author;
     private String message;
     private SonarRule rule;
+    
+    private ViolationDetails next;
 
     public Resource getResource() {
         return resource;
@@ -77,11 +79,19 @@ public class ViolationDetail {
     public void setRule(SonarRule sonarRule) {
         this.rule = sonarRule;
     }
+    
+    public ViolationDetails getNext() {
+		return next;
+	}
+    
+    public void setNext(ViolationDetails next) {
+		this.next = next;
+	}
 
-    @Override
-    public String toString() {
-        return "BlameDetail [resource=" + resource + ", lineNumber=" + lineNumber + ", dateIntroduced=" + dateIntroduced
-                + ", status=" + status + ", severity=" + severity + ", author=" + author + ", message=" + message
-                + ", sonarRule=" + rule + "]";
-    }
+	@Override
+	public String toString() {
+		return "ViolationDetail [resource=" + resource + ", lineNumber=" + lineNumber + ", dateIntroduced="
+				+ dateIntroduced + ", status=" + status + ", severity=" + severity + ", author=" + author
+				+ ", message=" + message + ", rule=" + rule + "]";
+	}
 }

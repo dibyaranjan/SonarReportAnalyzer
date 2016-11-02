@@ -1,6 +1,5 @@
 package com.dibya.sonar.converter.adapter;
 
-import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -11,17 +10,16 @@ import com.dibya.sonar.converter.AbstractConverter;
 import com.dibya.sonar.entity.Issue;
 import com.dibya.sonar.entity.ScmDetail;
 import com.dibya.sonar.entity.SourceFile;
-import com.dibya.sonar.entity.vo.ViolationDetail;
 import com.dibya.sonar.entity.vo.Resource;
-import com.dibya.sonar.entity.vo.wrapper.BlameDetailListWrapper;
+import com.dibya.sonar.entity.vo.ViolationDetails;
 
-public class BlameDetailListWrapperFromSourceFileConverter extends AbstractConverter {
-    private static final Logger LOGGER = Logger.getLogger(BlameDetailListWrapperFromSourceFileConverter.class);
+public class ViolationDetailsFromSourceFileConverter extends AbstractConverter {
+    private static final Logger LOGGER = Logger.getLogger(ViolationDetailsFromSourceFileConverter.class);
     
     private static final int SINGLE_ELEMENT_SIZE = 1;
     private static final int INVALID_INDEX = -1;
     
-    public BlameDetailListWrapperFromSourceFileConverter() {
+    public ViolationDetailsFromSourceFileConverter() {
         LOGGER.info("Registered " + getClass());
     }
 
@@ -29,12 +27,13 @@ public class BlameDetailListWrapperFromSourceFileConverter extends AbstractConve
     @Override
     protected <T, S> T doConvert(S sourceObject) {
         SourceFile sourceFile = (SourceFile) sourceObject;
-        BlameDetailListWrapper target = new BlameDetailListWrapper();
 
         List<Issue> issues = sourceFile.getIssues();
         List<ScmDetail> scmDetails = sourceFile.getScmDetails();
 
-        List<ViolationDetail> blameDetails = new LinkedList<>();
+        ViolationDetails target = null;
+        ViolationDetails next = null;
+        
         for (Issue issue : issues) {
             Resource resource = new Resource();
             resource.setResourceId(sourceFile.getId());
@@ -49,20 +48,24 @@ public class BlameDetailListWrapperFromSourceFileConverter extends AbstractConve
             ScmDetail scmDetail = scmDetails.get(indexOfScmToBeBlamed);
             DateTime dateTime = new DateTime(scmDetail.getDateIntroduced().getTime());
             
-            ViolationDetail blameDetail = new ViolationDetail();
-            blameDetail.setResource(resource);
-            blameDetail.setAuthor(scmDetail.getEmail());
-            blameDetail.setDateIntroduced(dateTime.toString("dd-MMM-yyyy"));
-            blameDetail.setLineNumber(issueLine);
-            blameDetail.setSeverity(issue.getSeverity());
-            blameDetail.setStatus(issue.getStatus());
-            blameDetail.setMessage(issue.getMessage());
-            blameDetail.setRule(issue.getRule());
-
-            blameDetails.add(blameDetail);
+            ViolationDetails violationDetails = new ViolationDetails();
+            violationDetails.setResource(resource);
+            violationDetails.setAuthor(scmDetail.getEmail());
+            violationDetails.setDateIntroduced(dateTime.toString("dd-MMM-yyyy"));
+            violationDetails.setLineNumber(issueLine);
+            violationDetails.setSeverity(issue.getSeverity());
+            violationDetails.setStatus(issue.getStatus());
+            violationDetails.setMessage(issue.getMessage());
+            violationDetails.setRule(issue.getRule());
+            
+            if (next == null) {
+            	target = violationDetails;
+            	next = violationDetails;
+            } else {
+            	next.setNext(violationDetails);
+            	next = next.getNext();
+            }
         }
-
-        target.setBlameDetails(blameDetails);
 
         return (T) target;
     }

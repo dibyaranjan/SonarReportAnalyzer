@@ -12,10 +12,10 @@ import java.util.TreeMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.dibya.sonar.cache.BlameDetailCache;
+import com.dibya.sonar.cache.ViolationDetailsCache;
 import com.dibya.sonar.entity.SeverityType;
 import com.dibya.sonar.entity.StatusType;
-import com.dibya.sonar.entity.vo.ViolationDetail;
+import com.dibya.sonar.entity.vo.ViolationDetails;
 import com.dibya.sonar.entity.vo.GenericCountHolder;
 import com.dibya.sonar.entity.vo.Resource;
 import com.dibya.sonar.service.SeverityService;
@@ -23,18 +23,18 @@ import com.dibya.sonar.service.SeverityService;
 @Service
 public class SeverityServiceUsingCache implements SeverityService {
     @Autowired
-    private BlameDetailCache cache;
+    private ViolationDetailsCache cache;
 
     @Override
     public List<GenericCountHolder> getSeverityCounts(String status) {
-        Map<String, List<ViolationDetail>> allBlameDetailsFromCache = cache.getAllBlameDetailsFromCache();
-        Set<Entry<String, List<ViolationDetail>>> entrySet = allBlameDetailsFromCache.entrySet();
+        Map<String, List<ViolationDetails>> allBlameDetailsFromCache = cache.getAllBlameDetailsFromCache();
+        Set<Entry<String, List<ViolationDetails>>> entrySet = allBlameDetailsFromCache.entrySet();
         Map<SeverityType, Integer> severityCounts = new TreeMap<>();
         StatusType statusType = StatusType.getStatus(status);
         
-        for (Entry<String, List<ViolationDetail>> entry : entrySet) {
-            List<ViolationDetail> value = entry.getValue();
-            for (ViolationDetail issue : value) {
+        for (Entry<String, List<ViolationDetails>> entry : entrySet) {
+            List<ViolationDetails> value = entry.getValue();
+            for (ViolationDetails issue : value) {
                 if (statusType.equals(issue.getStatus())) {
                     setSeverityCount(severityCounts, issue.getSeverity());
                 }
@@ -63,17 +63,17 @@ public class SeverityServiceUsingCache implements SeverityService {
     }
 
     @Override
-    public List<ViolationDetail> getAllIssueForSeverity(String severity) {
+    public List<ViolationDetails> getAllIssueForSeverity(String severity) {
         SeverityType selectedSeverity = SeverityType.getSeverity(severity);
 
-        Map<String, List<ViolationDetail>> allBlameDetailsFromCache = cache.getAllBlameDetailsFromCache();
-        Set<Entry<String, List<ViolationDetail>>> entrySet = allBlameDetailsFromCache.entrySet();
+        Map<String, List<ViolationDetails>> allBlameDetailsFromCache = cache.getAllBlameDetailsFromCache();
+        Set<Entry<String, List<ViolationDetails>>> entrySet = allBlameDetailsFromCache.entrySet();
 
-        List<ViolationDetail> filterdBlameDetails = new LinkedList<>();
+        List<ViolationDetails> filterdBlameDetails = new LinkedList<>();
 
-        for (Entry<String, List<ViolationDetail>> entry : entrySet) {
-            List<ViolationDetail> value = entry.getValue();
-            for (ViolationDetail issue : value) {
+        for (Entry<String, List<ViolationDetails>> entry : entrySet) {
+            List<ViolationDetails> value = entry.getValue();
+            for (ViolationDetails issue : value) {
                 if (selectedSeverity.equals(issue.getSeverity())) {
                     filterdBlameDetails.add(issue);
                 }
@@ -86,13 +86,13 @@ public class SeverityServiceUsingCache implements SeverityService {
     @Override
     public Set<Resource> getResourcesForSeverity(String severity) {
         SeverityType selectedSeverity = SeverityType.getSeverity(severity);
-        Map<String, List<ViolationDetail>> allBlameDetailsFromCache = cache.getAllBlameDetailsFromCache();
-        Set<Entry<String, List<ViolationDetail>>> entrySet = allBlameDetailsFromCache.entrySet();
+        Map<String, List<ViolationDetails>> allBlameDetailsFromCache = cache.getAllBlameDetailsFromCache();
+        Set<Entry<String, List<ViolationDetails>>> entrySet = allBlameDetailsFromCache.entrySet();
         Set<Resource> uniqueResources = new LinkedHashSet<>();
 
-        for (Entry<String, List<ViolationDetail>> entry : entrySet) {
-            List<ViolationDetail> value = entry.getValue();
-            for (ViolationDetail issue : value) {
+        for (Entry<String, List<ViolationDetails>> entry : entrySet) {
+            List<ViolationDetails> value = entry.getValue();
+            for (ViolationDetails issue : value) {
                 if (selectedSeverity.equals(issue.getSeverity())) {
                     uniqueResources.add(issue.getResource());
                 }

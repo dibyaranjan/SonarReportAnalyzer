@@ -22,10 +22,18 @@ public class DateComparator {
      * @return true if they are equal false otherwise
      */
     public static boolean areDatesEqual(Date date1, Date date2) {
-        if (date1 != null && date2 != null && date1.getTime() == date2.getTime()) {
-            return true;
+    	if (date1 == null) {
+    		return false;
+    	}
+    	
+    	if (date2 == null) {
+    		return false;
+    	}
+    	
+        if (date1.getTime() != date2.getTime()) {
+            return false;
         }
 
-        return false;
+        return true;
     }
 }

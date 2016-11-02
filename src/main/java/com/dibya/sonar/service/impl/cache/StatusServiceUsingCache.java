@@ -13,9 +13,9 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.dibya.sonar.cache.BlameDetailCache;
+import com.dibya.sonar.cache.ViolationDetailsCache;
 import com.dibya.sonar.entity.StatusType;
-import com.dibya.sonar.entity.vo.ViolationDetail;
+import com.dibya.sonar.entity.vo.ViolationDetails;
 import com.dibya.sonar.entity.vo.GenericCountHolder;
 import com.dibya.sonar.service.StatusService;
 
@@ -23,14 +23,14 @@ import com.dibya.sonar.service.StatusService;
 public class StatusServiceUsingCache implements StatusService {
 
     @Autowired
-    private BlameDetailCache cache;
+    private ViolationDetailsCache cache;
 
     @Override
-    public List<ViolationDetail> getIssuesForStatus(String status) {
+    public List<ViolationDetails> getIssuesForStatus(String status) {
         StatusType statusType = StatusType.getStatus(status);
-        List<ViolationDetail> allBlameDetails = cache.getAllBlameDetails();
-        List<ViolationDetail> filterdBlameDetails = new LinkedList<>();
-        for (ViolationDetail blameDetail : allBlameDetails) {
+        List<ViolationDetails> allBlameDetails = cache.getAllBlameDetails();
+        List<ViolationDetails> filterdBlameDetails = new LinkedList<>();
+        for (ViolationDetails blameDetail : allBlameDetails) {
             if (statusType.equals(blameDetail.getStatus())) {
                 filterdBlameDetails.add(blameDetail);
             }
@@ -41,15 +41,15 @@ public class StatusServiceUsingCache implements StatusService {
 
     @Override
     public List<GenericCountHolder> getAllStatusesCount() {
-        Map<String, List<ViolationDetail>> allBlameDetailsFromCache = cache.getAllBlameDetailsFromCache();
-        Set<Entry<String, List<ViolationDetail>>> entrySet = allBlameDetailsFromCache.entrySet();
+        Map<String, List<ViolationDetails>> allBlameDetailsFromCache = cache.getAllBlameDetailsFromCache();
+        Set<Entry<String, List<ViolationDetails>>> entrySet = allBlameDetailsFromCache.entrySet();
 
         int openCount = 0;
         int closedCount = 0;
 
-        for (Entry<String, List<ViolationDetail>> entry : entrySet) {
-            List<ViolationDetail> blameDetails = entry.getValue();
-            for (ViolationDetail blameDetail : blameDetails) {
+        for (Entry<String, List<ViolationDetails>> entry : entrySet) {
+            List<ViolationDetails> blameDetails = entry.getValue();
+            for (ViolationDetails blameDetail : blameDetails) {
                 if (CLOSED.equals(blameDetail.getStatus())) {
                     closedCount++;
                 } else {

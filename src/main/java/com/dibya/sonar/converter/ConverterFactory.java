@@ -11,6 +11,10 @@ import com.dibya.sonar.entity.vo.SourceTargetValue;
 public class ConverterFactory {
     @Autowired
     private HashMap<SourceTargetValue, Converter> converterRegistry;
+    
+    public void setConverterRegistry(HashMap<SourceTargetValue, Converter> converterRegistry) {
+		this.converterRegistry = converterRegistry;
+	}
 
     public Converter getConverter(SourceTargetValue stv) {
         Converter converter = converterRegistry.get(stv);

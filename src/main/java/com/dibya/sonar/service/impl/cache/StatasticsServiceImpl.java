@@ -17,14 +17,14 @@ import org.joda.time.format.DateTimeFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.dibya.sonar.cache.BlameDetailCache;
+import com.dibya.sonar.cache.ViolationDetailsCache;
 import com.dibya.sonar.cache.SourceFileCache;
 import com.dibya.sonar.dao.StatisticsPersister;
 import com.dibya.sonar.entity.Issue;
 import com.dibya.sonar.entity.ScmDetail;
 import com.dibya.sonar.entity.SeverityType;
 import com.dibya.sonar.entity.SourceFile;
-import com.dibya.sonar.entity.vo.ViolationDetail;
+import com.dibya.sonar.entity.vo.ViolationDetails;
 import com.dibya.sonar.entity.vo.GenericCountHolder;
 import com.dibya.sonar.entity.vo.MostViolatedMessage;
 import com.dibya.sonar.entity.vo.MostViolatedResource;
@@ -43,7 +43,7 @@ public class StatasticsServiceImpl implements StatasticsService {
     private SourceFileCache cache;
 
     @Autowired
-    private BlameDetailCache blameDetailsCache;
+    private ViolationDetailsCache blameDetailsCache;
 
     public void setPersister(StatisticsPersister persister) {
         this.persister = persister;
@@ -53,7 +53,7 @@ public class StatasticsServiceImpl implements StatasticsService {
         this.cache = cache;
     }
 
-    public void setBlameDetailsCache(BlameDetailCache blameDetailsCache) {
+    public void setBlameDetailsCache(ViolationDetailsCache blameDetailsCache) {
         this.blameDetailsCache = blameDetailsCache;
     }
 
@@ -169,18 +169,18 @@ public class StatasticsServiceImpl implements StatasticsService {
     }
 
     @Override
-    public List<ViolationDetail> getRecentViolations() {
-        Map<String, List<ViolationDetail>> allBlameDetailsFromCache = blameDetailsCache.getAllBlameDetailsFromCache();
-        Set<Entry<String, List<ViolationDetail>>> entrySet = allBlameDetailsFromCache.entrySet();
-        List<ViolationDetail> mostRecentBlameDetails = new LinkedList<>();
-        for (Entry<String, List<ViolationDetail>> entry : entrySet) {
-            List<ViolationDetail> blameDetails = entry.getValue();
+    public List<ViolationDetails> getRecentViolations() {
+        Map<String, List<ViolationDetails>> allBlameDetailsFromCache = blameDetailsCache.getAllBlameDetailsFromCache();
+        Set<Entry<String, List<ViolationDetails>>> entrySet = allBlameDetailsFromCache.entrySet();
+        List<ViolationDetails> mostRecentBlameDetails = new LinkedList<>();
+        for (Entry<String, List<ViolationDetails>> entry : entrySet) {
+            List<ViolationDetails> blameDetails = entry.getValue();
             mostRecentBlameDetails.addAll(blameDetails);
         }
 
-        Collections.sort(mostRecentBlameDetails, new Comparator<ViolationDetail>() {
+        Collections.sort(mostRecentBlameDetails, new Comparator<ViolationDetails>() {
             @Override
-            public int compare(ViolationDetail o1, ViolationDetail o2) {
+            public int compare(ViolationDetails o1, ViolationDetails o2) {
                 DateTimeFormatter formatter = DateTimeFormat.forPattern("dd-MMM-yyyy");
                 DateTime o1DateIntroduced = formatter.parseDateTime(o1.getDateIntroduced());
                 DateTime o2DateIntroduced = formatter.parseDateTime(o2.getDateIntroduced());
@@ -200,12 +200,12 @@ public class StatasticsServiceImpl implements StatasticsService {
     }
     
     @Override
-    public List<ViolationDetail> getAllViolations() {
-        Map<String, List<ViolationDetail>> allBlameDetailsFromCache = blameDetailsCache.getAllBlameDetailsFromCache();
-        Set<Entry<String, List<ViolationDetail>>> entrySet = allBlameDetailsFromCache.entrySet();
-        List<ViolationDetail> allBlameDetails = new LinkedList<>();
-        for (Entry<String, List<ViolationDetail>> entry : entrySet) {
-            List<ViolationDetail> blameDetails = entry.getValue();
+    public List<ViolationDetails> getAllViolations() {
+        Map<String, List<ViolationDetails>> allBlameDetailsFromCache = blameDetailsCache.getAllBlameDetailsFromCache();
+        Set<Entry<String, List<ViolationDetails>>> entrySet = allBlameDetailsFromCache.entrySet();
+        List<ViolationDetails> allBlameDetails = new LinkedList<>();
+        for (Entry<String, List<ViolationDetails>> entry : entrySet) {
+            List<ViolationDetails> blameDetails = entry.getValue();
             allBlameDetails.addAll(blameDetails);
         }
         
@@ -247,8 +247,8 @@ public class StatasticsServiceImpl implements StatasticsService {
     }
 
     @Override
-    public List<ViolationDetail> getViolationsForResource(String resourceName) {
-        Map<String, List<ViolationDetail>> allBlameDetailsFromCache = blameDetailsCache.getAllBlameDetailsFromCache();
+    public List<ViolationDetails> getViolationsForResource(String resourceName) {
+        Map<String, List<ViolationDetails>> allBlameDetailsFromCache = blameDetailsCache.getAllBlameDetailsFromCache();
         return allBlameDetailsFromCache.get(resourceName);
     }
 }

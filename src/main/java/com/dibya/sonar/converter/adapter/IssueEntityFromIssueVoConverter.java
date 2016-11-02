@@ -7,7 +7,7 @@ import com.dibya.sonar.entity.Issue;
 import com.dibya.sonar.entity.SeverityType;
 import com.dibya.sonar.entity.SonarRule;
 import com.dibya.sonar.entity.StatusType;
-import com.dibya.sonar.entity.vo.IssueVo;
+import com.dibya.sonar.entity.vo.Issues;
 import com.dibya.sonar.entity.vo.SonarRuleVo;
 
 public class IssueEntityFromIssueVoConverter extends AbstractConverter {
@@ -20,7 +20,7 @@ public class IssueEntityFromIssueVoConverter extends AbstractConverter {
     @SuppressWarnings("unchecked")
     @Override
     protected <T, S> T doConvert(S sourceObject) {
-        IssueVo source = (IssueVo) sourceObject;
+        Issues source = (Issues) sourceObject;
         
         Issue target = new Issue();
         SeverityType severity = SeverityType.getSeverity(source.getSeverity());
