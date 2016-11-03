@@ -58,7 +58,6 @@ public class ViolationDetailsCache {
 	}
 
 	public void initializeCache() {
-		LOGGER.info("Cache initialized at : " + new Date());
 		List<SourceFile> sourceFiles;
 		if (sourceFileCache == null) {
 			sourceFiles = persister.loadAllSourceFilesEagerly();
@@ -70,6 +69,7 @@ public class ViolationDetailsCache {
 		blameDetails = new LinkedHashMap<>();
 		allBlameDetails = new LinkedList<>();
 		setBlameDetailsFromSourceFiles(sourceFiles);
+		LOGGER.info("Cache initialized at : " + new Date());
 	}
 
 	private void setBlameDetailsFromSourceFiles(List<SourceFile> sourceFiles) {
@@ -79,6 +79,7 @@ public class ViolationDetailsCache {
 			List<ViolationDetails> convertedBlameDetails = new LinkedList<ViolationDetails>();
 			while (next!= null){
 				convertedBlameDetails.add(next);
+				next = next.getNext();
 			}
 			
 			allBlameDetails.addAll(convertedBlameDetails);

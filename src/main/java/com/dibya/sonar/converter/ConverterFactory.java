@@ -9,7 +9,8 @@ import com.dibya.sonar.entity.vo.SourceTargetValue;
 
 @Service
 public class ConverterFactory {
-    @Autowired
+	
+	@Autowired
     private HashMap<SourceTargetValue, Converter> converterRegistry;
     
     public void setConverterRegistry(HashMap<SourceTargetValue, Converter> converterRegistry) {
