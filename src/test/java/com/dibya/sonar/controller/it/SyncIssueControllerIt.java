@@ -28,7 +28,6 @@ public class SyncIssueControllerIt {
 	@Autowired
 	private SyncIssueController controller;
 	
-	@Test
 	public void testSync() {
 		GenericJsonObject syncIssues = controller.syncIssues();
 		Assert.assertEquals("Sync should be successful", true, syncIssues.isSuccessful());
@@ -47,7 +46,6 @@ public class SyncIssueControllerIt {
 	 * !!This testcase will try to get the JSON from the URL twice hence runs
 	 * slow!!
 	 */
-	@Test
 	public void testSyncWithDuplicateData() {
 		GenericJsonObject syncIssues = controller.syncIssues();
 		Assert.assertEquals("Sync should be successful", true, syncIssues.isSuccessful());

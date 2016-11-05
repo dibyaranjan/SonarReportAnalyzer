@@ -27,7 +27,7 @@ public class UrlValidatorIt {
 	
 	@Test
 	public void testValidatorWithValidUrl() {
-		boolean result = validator.isUrlAccessible("http://localhost:9000/");
+		boolean result = validator.isUrlAccessible("https://en.wikipedia.org");
 		Assert.assertTrue("Should be true", result);
 	}
 }
