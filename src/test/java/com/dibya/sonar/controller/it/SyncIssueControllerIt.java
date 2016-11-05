@@ -10,7 +10,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.dibya.sonar.configuration.AspectConfiguration;
 import com.dibya.sonar.configuration.BeanHolder;
 import com.dibya.sonar.configuration.ConverterBeans;
-import com.dibya.sonar.configuration.PageCrawlerBean;
 import com.dibya.sonar.configuration.SourceFilePersisterItConfiguration;
 import com.dibya.sonar.controller.SyncIssueController;
 import com.dibya.sonar.converter.BaseConverter;
@@ -21,7 +20,7 @@ import com.dibya.sonar.service.sync.SonarReportSynchronizer;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { SyncIssueController.class, SonarReportSynchronizer.class, BaseConverter.class,
-		ConverterFactory.class, ConverterFactory.class, PageCrawlerBean.class,
+		ConverterFactory.class, ConverterFactory.class,
 		SourceFilePersisterItConfiguration.class, AspectConfiguration.class, SourceFilePersisterImpl.class,
 		ConverterBeans.class, BeanHolder.class })
 public class SyncIssueControllerIt {
@@ -29,6 +28,7 @@ public class SyncIssueControllerIt {
 	@Autowired
 	private SyncIssueController controller;
 	
+	@Test
 	public void testSync() {
 		GenericJsonObject syncIssues = controller.syncIssues();
 		Assert.assertEquals("Sync should be successful", true, syncIssues.isSuccessful());
@@ -47,6 +47,7 @@ public class SyncIssueControllerIt {
 	 * !!This testcase will try to get the JSON from the URL twice hence runs
 	 * slow!!
 	 */
+	@Test
 	public void testSyncWithDuplicateData() {
 		GenericJsonObject syncIssues = controller.syncIssues();
 		Assert.assertEquals("Sync should be successful", true, syncIssues.isSuccessful());

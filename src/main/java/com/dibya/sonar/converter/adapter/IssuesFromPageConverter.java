@@ -42,8 +42,7 @@ public class IssuesFromPageConverter extends AbstractConverter {
 
             List<Issue> sonarIssues = head.getSonarIssues();
             for (Issue issue : sonarIssues) {
-                Issues issueVo = new Issues();
-                convertIssue(issueVo, issue);
+                Issues issueVo = converter.convert(new Issues(), issue);
                 
                 Project project = new Project();
                 issueVo.setProject(project);
@@ -63,14 +62,4 @@ public class IssuesFromPageConverter extends AbstractConverter {
 
         return (T) target;
     }
-
-    private void convertIssue(Issues target, Issue issue) {
-        target.setComponent(issue.getComponent());
-        target.setKey(issue.getKey());
-        target.setLine(issue.getLine());
-        target.setMessage(issue.getMessage());
-        target.setSeverity(issue.getSeverity());
-        target.setStatus(issue.getStatus());
-    }
-
 }

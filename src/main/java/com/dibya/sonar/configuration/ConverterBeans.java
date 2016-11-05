@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Configuration;
 
 import com.dibya.sonar.converter.Converter;
 import com.dibya.sonar.converter.adapter.IssueEntityFromIssueVoConverter;
+import com.dibya.sonar.converter.adapter.IssuesFromIssueVoConverter;
 import com.dibya.sonar.converter.adapter.IssuesFromPageConverter;
 import com.dibya.sonar.converter.adapter.ResourceFromSourceFileConverter;
 import com.dibya.sonar.converter.adapter.ScmDetailListWrapperFromScmDetailsConverter;
@@ -29,6 +30,7 @@ public class ConverterBeans {
         converterRegistry.put(new SourceTargetValue(com.dibya.sonar.entity.vo.Page.class, com.dibya.sonar.entity.vo.Issues.class), new IssuesFromPageConverter());
         converterRegistry.put(new SourceTargetValue(com.dibya.sonar.entity.vo.SonarRuleVo.class, com.dibya.sonar.entity.SonarRule.class), new SonarRuleFromSonarRuleVoConverter());
         converterRegistry.put(new SourceTargetValue(com.dibya.sonar.entity.SourceFile.class, com.dibya.sonar.entity.vo.Resource.class), new ResourceFromSourceFileConverter());
+        converterRegistry.put(new SourceTargetValue(com.dibya.sonar.entity.vo.Issue.class, com.dibya.sonar.entity.vo.Issues.class), new IssuesFromIssueVoConverter());
         return converterRegistry;
     }
 }
