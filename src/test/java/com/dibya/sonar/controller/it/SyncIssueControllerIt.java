@@ -1,6 +1,7 @@
 package com.dibya.sonar.controller.it;
 
 import org.junit.Assert;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -26,6 +27,11 @@ public class SyncIssueControllerIt {
 
 	@Autowired
 	private SyncIssueController controller;
+	
+	@Test
+	public void dummyTest() {
+		
+	}
 	
 	public void testSync() {
 		GenericJsonObject syncIssues = controller.syncIssues();
