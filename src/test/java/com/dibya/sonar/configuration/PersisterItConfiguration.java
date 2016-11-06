@@ -24,7 +24,7 @@ public class PersisterItConfiguration extends HibernateConfiguration {
     public DataSource dataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName("org.h2.Driver");
-        dataSource.setUrl("jdbc:h2:/h2-db/sonar-db");
+        dataSource.setUrl("jdbc:h2:target/h2-db/sonar-db");
         dataSource.setUsername("sa");
         dataSource.setPassword("");
         return dataSource;

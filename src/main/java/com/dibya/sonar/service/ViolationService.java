@@ -2,10 +2,10 @@ package com.dibya.sonar.service;
 
 import java.util.List;
 
-import com.dibya.sonar.entity.vo.ViolationDetail;
+import com.dibya.sonar.entity.vo.ViolationDetails;
 
 public interface ViolationService {
-    public List<ViolationDetail> getAllViolations();
-    public List<ViolationDetail> getViolationsWithStatus(String orderBy);
-    public ViolationDetail getIssueByKey(String key);
+    public List<ViolationDetails> getAllViolations();
+    public List<ViolationDetails> getViolationsWithStatus(String orderBy);
+    public ViolationDetails getIssueByKey(String key);
 }

@@ -1,5 +1,8 @@
 package com.dibya.sonar.converter;
 
+import java.util.HashMap;
+
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -10,10 +13,24 @@ import com.dibya.sonar.entity.vo.SourceTargetValue;
 
 public class ConverterFactoryTest {
     private ConverterFactory factory;
+    private HashMap<SourceTargetValue, Converter> converterRegistry;
 
     @Before
     public void setUp() {
+    	SourceTargetValue issueFromIssueVo = new SourceTargetValue(Issue.class, com.dibya.sonar.entity.Issue.class);
+		Converter value = new IssueEntityFromIssueConverter();
+		
+		converterRegistry = new HashMap<SourceTargetValue, Converter>();
+		converterRegistry.put(issueFromIssueVo, value);
+    	
         factory = new ConverterFactory();
+		factory.setConverterRegistry(converterRegistry);
+    }
+    
+    @After
+    public void tearDown() {
+    	converterRegistry = null;
+    	factory = null;
     }
 
     @Test

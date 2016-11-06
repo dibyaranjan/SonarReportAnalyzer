@@ -15,10 +15,10 @@ import com.dibya.sonar.cache.SourceFileCache;
 import com.dibya.sonar.converter.Converter;
 import com.dibya.sonar.dao.SourceFilePersister;
 import com.dibya.sonar.entity.SourceFile;
+import com.dibya.sonar.entity.vo.Issues;
 import com.dibya.sonar.entity.vo.Page;
 import com.dibya.sonar.entity.vo.PageMetaData;
 import com.dibya.sonar.entity.vo.ScmDetails;
-import com.dibya.sonar.entity.vo.wrapper.IssueVoListWrapper;
 import com.dibya.sonar.entity.vo.wrapper.ScmDetailListWrapper;
 import com.dibya.sonar.entity.vo.wrapper.SourceFileListWrapper;
 import com.dibya.sonar.json.crawler.JsonCrawler;
@@ -30,165 +30,171 @@ import com.dibya.sonar.json.crawler.JsonCrawler;
  */
 @Service
 public class SonarReportSynchronizer {
-    private static final Logger LOGGER = Logger.getLogger(SonarReportSynchronizer.class);
-    private static final String URL_FORMAT = "http://localhost:9000/api/issues/search?pageIndex={0}";
-    private static final String SCM_URL_FORMAT = "http://localhost:9000/api/sources/scm?key=%s";
-    
-    @Autowired
-    private SourceFileCache cache; 
+	private static final Logger LOGGER = Logger.getLogger(SonarReportSynchronizer.class);
+	private static final String URL_FORMAT = "http://localhost:9000/api/issues/search?pageIndex={0}";
+	private static final String SCM_URL_FORMAT = "http://localhost:9000/api/sources/scm?key=%s";
 
-    @Autowired
-    private Converter converter;
+	@Autowired
+	private SourceFileCache cache;
 
-    @Autowired
-    private JsonCrawler<Page> issueCrawler;
+	@Autowired
+	private Converter converter;
 
-    @Autowired
-    private JsonCrawler<ScmDetails> scmCrawler;
+	@Autowired
+	private JsonCrawler<Page> issueCrawler;
 
-    @Autowired
-    private SourceFilePersister persister;
-    
-    public void setCache(SourceFileCache cache) {
-        this.cache = cache;
-    }
+	@Autowired
+	private JsonCrawler<ScmDetails> scmCrawler;
 
-    public void setConverter(Converter converter) {
-        this.converter = converter;
-    }
+	@Autowired
+	private SourceFilePersister persister;
 
-    public void setIssueCrawler(JsonCrawler<Page> issueCrawler) {
-        this.issueCrawler = issueCrawler;
-    }
+	public void setCache(SourceFileCache cache) {
+		this.cache = cache;
+	}
 
-    public void setScmCrawler(JsonCrawler<ScmDetails> scmCrawler) {
-        this.scmCrawler = scmCrawler;
-    }
-    
-    public void setPersister(SourceFilePersister persister) {
-        this.persister = persister;
-    }
+	public void setConverter(Converter converter) {
+		this.converter = converter;
+	}
 
-    
-    /**
-     * Syncs the sonar reports from the latest URL to the internal database
-     * 
-     * @return
-     */
-    public boolean sync() {
-        return performSync();
-    }
+	public void setIssueCrawler(JsonCrawler<Page> issueCrawler) {
+		this.issueCrawler = issueCrawler;
+	}
 
-    private boolean performSync() {
-        LOGGER.info("Sync started!");
+	public void setScmCrawler(JsonCrawler<ScmDetails> scmCrawler) {
+		this.scmCrawler = scmCrawler;
+	}
 
-        IssueVoListWrapper issueVoListWrapper = getAllIssuesFromUrl();
+	public void setPersister(SourceFilePersister persister) {
+		this.persister = persister;
+	}
 
-        if (CollectionUtils.isEmpty(issueVoListWrapper.getIssueVoList())) {
-            LOGGER.warn("No issues found!");
-            return false;
-        }
+	/**
+	 * Syncs the sonar reports from the latest URL to the internal database
+	 * 
+	 * @return
+	 */
+	public boolean sync() {
+		return performSync();
+	}
 
-        SourceFileListWrapper sourceFileListWrapper = converter.convert(new SourceFileListWrapper(), issueVoListWrapper);
+	private boolean performSync() {
+		LOGGER.info("Sync started!");
 
-        List<SourceFile> sourceFiles = sourceFileListWrapper.getSourceFiles();
-        if (CollectionUtils.isEmpty(sourceFiles)) {
-            LOGGER.info("No source files to be read");
-            return false;
-        }
+		Issues issues = getAllIssuesFromUrl();
 
-        extractScmDetailsFromUrl(sourceFiles);
+		if (issues == null) {
+			LOGGER.warn("No issues found!");
+			return false;
+		}
 
-        List<SourceFile> uniqueList = getUpdateSourceFiles(sourceFiles);
+		SourceFileListWrapper sourceFileListWrapper = converter.convert(new SourceFileListWrapper(), issues);
 
-        saveSourceFiles(uniqueList);
+		List<SourceFile> sourceFiles = sourceFileListWrapper.getSourceFiles();
+		if (CollectionUtils.isEmpty(sourceFiles)) {
+			LOGGER.info("No source files to be read");
+			return false;
+		}
 
-        LOGGER.info("Synced!");
-        return true;
-    }
+		extractScmDetailsFromUrl(sourceFiles);
 
-    private List<SourceFile> getUpdateSourceFiles(List<SourceFile> sourceFiles) {
-        Map<String, SourceFile> allSourceFilesFromCache = cache.getAllSourceFilesFromCache();
-        Collection<SourceFile> sourceFilesFromDb = allSourceFilesFromCache.values();
-        List<SourceFile> uniqueList = new LinkedList<>();
+		List<SourceFile> uniqueList = getUpdateSourceFiles(sourceFiles);
 
-        for (SourceFile sourceFile : sourceFiles) {
-            boolean found = false;
-            for (SourceFile sourceFileFromDb : sourceFilesFromDb) {
-                if (sourceFileFromDb.equals(sourceFile)) {
-                    found = true;
-                    break;
-                }
-            }
+		saveSourceFiles(uniqueList);
+		
+		cache.refresh();
 
-            if (!found) {
-                String fileName = sourceFile.getName();
-                SourceFile existingSourceFile = allSourceFilesFromCache.get(fileName);
-                if (existingSourceFile != null) {
-                    sourceFile.setId(existingSourceFile.getId());
-                }
-                uniqueList.add(sourceFile);
-            }
-        }
+		LOGGER.info("Synced!");
+		return true;
+	}
 
-        return uniqueList;
-    }
+	private List<SourceFile> getUpdateSourceFiles(List<SourceFile> sourceFiles) {
+		Map<String, SourceFile> allSourceFilesFromCache = cache.getAllSourceFilesFromCache();
+		Collection<SourceFile> sourceFilesFromDb = allSourceFilesFromCache.values();
+		List<SourceFile> uniqueList = new LinkedList<>();
 
-    private void saveSourceFiles(List<SourceFile> sourceFiles) {
-        for (SourceFile sourceFile : sourceFiles) {
-            persister.save(sourceFile);
-        }
-    }
+		for (SourceFile sourceFile : sourceFiles) {
+			boolean found = false;
+			for (SourceFile sourceFileFromDb : sourceFilesFromDb) {
+				if (sourceFileFromDb.equals(sourceFile)) {
+					found = true;
+					break;
+				}
+			}
 
-    private void extractScmDetailsFromUrl(List<SourceFile> allSourceFiles) {
-        for (SourceFile sourceFile : allSourceFiles) {
-            ScmDetails scm = scmCrawler.retrieveJsonContentFromUrl(String.format(SCM_URL_FORMAT, sourceFile.getName()));
+			if (!found) {
+				String fileName = sourceFile.getName();
+				SourceFile existingSourceFile = allSourceFilesFromCache.get(fileName);
+				if (existingSourceFile != null) {
+					sourceFile.setId(existingSourceFile.getId());
+				}
+				uniqueList.add(sourceFile);
+			}
+		}
 
-            if (scm != null) {
-                scm.setSourceFile(sourceFile);
-            }
+		return uniqueList;
+	}
 
-            ScmDetailListWrapper target = converter.convert(new ScmDetailListWrapper(), scm);
+	private void saveSourceFiles(List<SourceFile> sourceFiles) {
+		for (SourceFile sourceFile : sourceFiles) {
+			persister.save(sourceFile);
+		}
+	}
 
-            sourceFile.setScmDetails(target.getScmDetails());
-        }
-    }
+	private void extractScmDetailsFromUrl(List<SourceFile> allSourceFiles) {
+		for (SourceFile sourceFile : allSourceFiles) {
+			ScmDetails scm = scmCrawler.retrieveJsonContentFromUrl(String.format(SCM_URL_FORMAT, sourceFile.getName()));
 
-    private IssueVoListWrapper getAllIssuesFromUrl() {
-        Page allPages = getAllPages();
-        return converter.convert(new IssueVoListWrapper(), allPages);
-    }
+			if (scm != null) {
+				scm.setSourceFile(sourceFile);
+			}
 
-    private Page getAllPages() {
-        boolean hasNextPage = true;
-        int currentPage = 1;
-        Page prevPage = null;
-        Page head = null;
+			ScmDetailListWrapper target = converter.convert(new ScmDetailListWrapper(), scm);
 
-        while (hasNextPage) {
-            String url = MessageFormat.format(URL_FORMAT, currentPage);
-            Page page = issueCrawler.retrieveJsonContentFromUrl(url);
+			sourceFile.setScmDetails(target.getScmDetails());
+		}
+	}
 
-            if (page == null) {
-                return head;
-            }
+	private Issues getAllIssuesFromUrl() {
+		Page allPages = getAllPages();
 
-            if (prevPage == null) {
-                head = page;
-            } else {
-                prevPage.setNextPage(page);
-            }
+		if (allPages == null || CollectionUtils.isEmpty(allPages.getSonarIssues())) {
+			return null;
+		}
 
-            PageMetaData pageMetaData = page.getPageMetaData();
-            if (currentPage == pageMetaData.getPages()) {
-                hasNextPage = false;
-            }
+		return converter.convert(new Issues(), allPages);
+	}
 
-            prevPage = page;
+	private Page getAllPages() {
+		boolean hasNextPage = true;
+		int currentPage = 1;
+		Page prevPage = null;
+		Page head = null;
 
-            currentPage++;
-        }
+		while (hasNextPage) {
+			String url = MessageFormat.format(URL_FORMAT, currentPage);
+			Page page = issueCrawler.retrieveJsonContentFromUrl(url);
 
-        return head;
-    }
+			if (page == null) {
+				return head;
+			}
+
+			if (prevPage == null) {
+				head = page;
+			} else {
+				prevPage.setNextPage(page);
+			}
+
+			PageMetaData pageMetaData = page.getPageMetaData();
+			if (pageMetaData == null || currentPage == pageMetaData.getPages()) {
+				hasNextPage = false;
+			}
+
+			prevPage = page;
+
+			currentPage++;
+		}
+
+		return head;
+	}
 }

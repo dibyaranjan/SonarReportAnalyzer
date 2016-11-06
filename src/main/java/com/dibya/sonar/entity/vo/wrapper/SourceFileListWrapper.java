@@ -9,7 +9,7 @@ import com.dibya.sonar.entity.SourceFile;
  * A wrapper class to hold list of sourceFiles.
  * 
  * There is a limitation of the converter framework. It doesn't support list
- * conversion directly refer to javadoc of the Converters for more details.
+ * conversion directly, refer to javadoc of the Converters for more details.
  * 
  * This wrapper provides an work around for object conversion.
  *

@@ -15,6 +15,7 @@ import com.dibya.sonar.entity.vo.Issue;
  *
  * @author Dibya Ranjan
  */
+@Deprecated
 public class IssueListWrapper {
     private List<Issue> issues = new ArrayList<>();
 
