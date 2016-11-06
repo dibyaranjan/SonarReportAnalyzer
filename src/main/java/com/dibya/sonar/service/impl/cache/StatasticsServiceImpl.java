@@ -182,6 +182,14 @@ public class StatasticsServiceImpl implements StatasticsService {
             @Override
             public int compare(ViolationDetails o1, ViolationDetails o2) {
                 DateTimeFormatter formatter = DateTimeFormat.forPattern("dd-MMM-yyyy");
+                if (o1.getDateIntroduced() == null) {
+                	return 1;
+                }
+                
+                if (o2.getDateIntroduced() == null) {
+                	return -1;
+                }
+                
                 DateTime o1DateIntroduced = formatter.parseDateTime(o1.getDateIntroduced());
                 DateTime o2DateIntroduced = formatter.parseDateTime(o2.getDateIntroduced());
 

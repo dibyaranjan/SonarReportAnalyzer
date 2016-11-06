@@ -48,6 +48,9 @@ public class UserServiceUsingCache implements UserService {
     }
 
     private void setViolationCount(Map<String, Integer> violationCounts, String author) {
+		if (author == null) {
+			return;
+		}
         Integer existingCount = violationCounts.get(author);
         if (existingCount == null) {
             existingCount = 0;
