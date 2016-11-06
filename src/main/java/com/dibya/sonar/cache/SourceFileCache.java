@@ -31,12 +31,12 @@ public class SourceFileCache {
     }
 
     public void initializeCache() {
-        LOGGER.info("Cache initialized at : " + new Date());
         cachedSourceFilesByName = new LinkedHashMap<>();
         List<SourceFile> allSourceFiles = persister.loadAllSourceFilesEagerly();
         for (SourceFile sourceFile : allSourceFiles) {
             cachedSourceFilesByName.put(sourceFile.getName(), sourceFile);
         }
+        LOGGER.info("Cache initialized at : " + new Date());
     }
     
     public void refresh() {
