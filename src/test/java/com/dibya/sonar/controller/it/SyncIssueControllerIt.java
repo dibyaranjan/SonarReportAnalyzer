@@ -19,7 +19,7 @@ import com.dibya.sonar.dao.impl.hibernate.SourceFilePersisterImpl;
 import com.dibya.sonar.entity.vo.GenericJsonObject;
 import com.dibya.sonar.service.sync.SonarReportSynchronizer;
 
-@Ignore
+
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { SyncIssueController.class, SonarReportSynchronizer.class, BaseConverter.class,
 		ConverterFactory.class, ConverterFactory.class,
@@ -31,6 +31,7 @@ public class SyncIssueControllerIt {
 	private SyncIssueController controller;
 	
 	@Test
+	@Ignore
 	public void testSync() {
 		GenericJsonObject syncIssues = controller.syncIssues();
 		Assert.assertEquals("Sync should be successful", true, syncIssues.isSuccessful());
@@ -50,6 +51,7 @@ public class SyncIssueControllerIt {
 	 * slow!!
 	 */
 	@Test
+	@Ignore
 	public void testSyncWithDuplicateData() {
 		GenericJsonObject syncIssues = controller.syncIssues();
 		Assert.assertEquals("Sync should be successful", true, syncIssues.isSuccessful());
