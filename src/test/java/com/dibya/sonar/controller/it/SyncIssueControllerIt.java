@@ -1,6 +1,7 @@
 package com.dibya.sonar.controller.it;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,7 @@ import com.dibya.sonar.dao.impl.hibernate.SourceFilePersisterImpl;
 import com.dibya.sonar.entity.vo.GenericJsonObject;
 import com.dibya.sonar.service.sync.SonarReportSynchronizer;
 
+@Ignore
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { SyncIssueController.class, SonarReportSynchronizer.class, BaseConverter.class,
 		ConverterFactory.class, ConverterFactory.class,
