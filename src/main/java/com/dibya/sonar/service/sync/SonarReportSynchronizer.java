@@ -15,6 +15,7 @@ import com.dibya.sonar.cache.SourceFileCache;
 import com.dibya.sonar.converter.Converter;
 import com.dibya.sonar.dao.SourceFilePersister;
 import com.dibya.sonar.entity.SourceFile;
+import com.dibya.sonar.entity.util.TimeKeeper;
 import com.dibya.sonar.entity.vo.Issues;
 import com.dibya.sonar.entity.vo.Page;
 import com.dibya.sonar.entity.vo.PageMetaData;
@@ -137,6 +138,17 @@ public class SonarReportSynchronizer {
 
 	private void saveSourceFiles(List<SourceFile> sourceFiles) {
 		for (SourceFile sourceFile : sourceFiles) {
+			SourceFilePersistHelper persisterHelper = new SourceFilePersistHelper();
+			persisterHelper.sourceFile = sourceFile;
+			persisterHelper.start();
+		}
+	}
+	
+	private class SourceFilePersistHelper extends Thread {
+		private SourceFile sourceFile;
+		
+		@Override
+		public void run() {
 			persister.save(sourceFile);
 		}
 	}
@@ -156,13 +168,18 @@ public class SonarReportSynchronizer {
 	}
 
 	private Issues getAllIssuesFromUrl() {
+		TimeKeeper timeKeeper = new TimeKeeper();
+		timeKeeper.start();
 		Page allPages = getAllPages();
 
 		if (allPages == null || CollectionUtils.isEmpty(allPages.getSonarIssues())) {
 			return null;
 		}
 
-		return converter.convert(new Issues(), allPages);
+		Issues issues = converter.convert(new Issues(), allPages);
+		timeKeeper.stop();
+		LOGGER.info("Total time taken - " + timeKeeper.getTimeTaken());
+		return issues;
 	}
 
 	private Page getAllPages() {
