@@ -1,6 +1,7 @@
 package com.dibya.sonar.json.crawler;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,7 @@ public class UrlValidatorIt {
 	}
 	
 	@Test
+	@Ignore
 	public void testValidatorWithValidUrl() {
 		boolean result = validator.isUrlAccessible("https://en.wikipedia.org");
 		Assert.assertTrue("Should be true", result);

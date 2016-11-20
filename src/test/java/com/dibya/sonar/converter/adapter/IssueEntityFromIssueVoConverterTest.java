@@ -4,7 +4,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.dibya.sonar.converter.Converter;
+import com.dibya.infra.converter.Converter;
 import com.dibya.sonar.entity.builder.IssueVoBuilder;
 import com.dibya.sonar.entity.vo.Issue;
 

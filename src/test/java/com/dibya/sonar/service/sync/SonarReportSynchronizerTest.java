@@ -12,13 +12,12 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.dibya.sonar.converter.Converter;
+import com.dibya.infra.converter.Converter;
 import com.dibya.sonar.entity.SourceFile;
 import com.dibya.sonar.entity.builder.IssueEntityBuilder;
 import com.dibya.sonar.entity.builder.PageBuilder;
 import com.dibya.sonar.entity.vo.Issue;
 import com.dibya.sonar.entity.vo.Page;
-import com.dibya.sonar.entity.vo.wrapper.IssueListWrapper;
 import com.dibya.sonar.entity.vo.wrapper.SourceFileListWrapper;
 import com.dibya.sonar.json.crawler.JsonCrawler;
 
@@ -111,6 +110,8 @@ public class SonarReportSynchronizerTest {
         Assert.assertFalse("Sync should have failed", synced);
     }
     
+    
+    
     public void testSyncWithNoIssuesPersisted() {
         mockery.checking(new Expectations() {
             {
@@ -149,9 +150,6 @@ public class SonarReportSynchronizerTest {
                 
                 oneOf(converter).convert(with(any(com.dibya.sonar.entity.Issue.class)), with(any(Issue.class)));
                 will(returnValue(issues.get(8)));
-                
-                oneOf(converter).convert(with(any(SourceFileListWrapper.class)), with(any(IssueListWrapper.class)));
-                will(returnValue(sourceFileListWrapper));
             }
         });
 
@@ -200,10 +198,6 @@ public class SonarReportSynchronizerTest {
                 
                 oneOf(converter).convert(with(any(com.dibya.sonar.entity.Issue.class)), with(any(Issue.class)));
                 will(returnValue(issues.get(8)));
-                
-                oneOf(converter).convert(with(any(SourceFileListWrapper.class)), with(any(IssueListWrapper.class)));
-                will(returnValue(sourceFileListWrapper));
-                
             }
         });
 

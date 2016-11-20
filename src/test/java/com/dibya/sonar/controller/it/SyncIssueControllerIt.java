@@ -8,13 +8,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.dibya.infra.converter.BaseConverter;
+import com.dibya.infra.converter.ConverterFactory;
 import com.dibya.sonar.configuration.AspectConfiguration;
 import com.dibya.sonar.configuration.BeanHolder;
 import com.dibya.sonar.configuration.ConverterBeans;
 import com.dibya.sonar.configuration.SourceFilePersisterItConfiguration;
 import com.dibya.sonar.controller.SyncIssueController;
-import com.dibya.sonar.converter.BaseConverter;
-import com.dibya.sonar.converter.ConverterFactory;
 import com.dibya.sonar.dao.impl.hibernate.SourceFilePersisterImpl;
 import com.dibya.sonar.entity.vo.GenericJsonObject;
 import com.dibya.sonar.service.sync.SonarReportSynchronizer;

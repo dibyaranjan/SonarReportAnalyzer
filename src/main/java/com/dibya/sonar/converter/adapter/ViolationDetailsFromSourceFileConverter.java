@@ -6,13 +6,15 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 
-import com.dibya.sonar.converter.AbstractConverter;
+import com.dibya.infra.converter.AbstractConverter;
+import com.dibya.infra.converter.annotation.Convert;
 import com.dibya.sonar.entity.Issue;
 import com.dibya.sonar.entity.ScmDetail;
 import com.dibya.sonar.entity.SourceFile;
 import com.dibya.sonar.entity.vo.Resource;
 import com.dibya.sonar.entity.vo.ViolationDetails;
 
+@Convert(source = com.dibya.sonar.entity.SourceFile.class, target = com.dibya.sonar.entity.vo.ViolationDetails.class)
 public class ViolationDetailsFromSourceFileConverter extends AbstractConverter {
 	private static final Logger LOGGER = Logger.getLogger(ViolationDetailsFromSourceFileConverter.class);
 

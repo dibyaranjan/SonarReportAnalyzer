@@ -10,7 +10,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.log4j.Logger;
 
-import com.dibya.sonar.converter.BaseConverter;
+import com.dibya.infra.converter.Converter;
 import com.dibya.sonar.dao.SourceFilePersister;
 import com.dibya.sonar.entity.SourceFile;
 import com.dibya.sonar.entity.vo.ViolationDetails;
@@ -29,7 +29,7 @@ import com.dibya.sonar.entity.vo.ViolationDetails;
 public class ViolationDetailsCache {
 	private static final Logger LOGGER = Logger.getLogger(ViolationDetailsCache.class);
 	private SourceFilePersister persister;
-	private BaseConverter converter;
+	private Converter converter;
 	private Map<String, List<ViolationDetails>> blameDetails;
 	private List<ViolationDetails> allBlameDetails;
 	private SourceFileCache sourceFileCache;
@@ -38,7 +38,7 @@ public class ViolationDetailsCache {
 		this.persister = persister;
 	}
 
-	public void setConverter(BaseConverter converter) {
+	public void setConverter(Converter converter) {
 		this.converter = converter;
 	}
 
@@ -65,6 +65,11 @@ public class ViolationDetailsCache {
 			Map<String, SourceFile> allSourceFilesFromCache = sourceFileCache.getAllSourceFilesFromCache();
 			sourceFiles = new LinkedList<>(allSourceFilesFromCache.values());
 		}
+		
+		if (CollectionUtils.isEmpty(sourceFiles)) {
+            LOGGER.info("Nothing to cache");
+            return;
+        }
 
 		blameDetails = new LinkedHashMap<>();
 		allBlameDetails = new LinkedList<>();

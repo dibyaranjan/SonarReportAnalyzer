@@ -14,8 +14,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.dibya.sonar.converter.AbstractConverter;
-import com.dibya.sonar.converter.Converter;
+import com.dibya.infra.converter.AbstractConverter;
+import com.dibya.infra.converter.Converter;
 import com.dibya.sonar.entity.Issue;
 import com.dibya.sonar.entity.ScmDetail;
 import com.dibya.sonar.entity.SeverityType;

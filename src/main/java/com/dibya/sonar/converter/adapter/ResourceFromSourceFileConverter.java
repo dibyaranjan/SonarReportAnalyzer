@@ -1,6 +1,7 @@
 package com.dibya.sonar.converter.adapter;
 
-import com.dibya.sonar.converter.AbstractConverter;
+import com.dibya.infra.converter.AbstractConverter;
+import com.dibya.infra.converter.annotation.Convert;
 import com.dibya.sonar.entity.SourceFile;
 import com.dibya.sonar.entity.vo.Resource;
 
@@ -9,6 +10,7 @@ import com.dibya.sonar.entity.vo.Resource;
  * 
  * @author Dibya
  */
+@Convert(source = com.dibya.sonar.entity.SourceFile.class, target = com.dibya.sonar.entity.vo.Resource.class)
 public class ResourceFromSourceFileConverter extends AbstractConverter {
 
 	@SuppressWarnings("unchecked")

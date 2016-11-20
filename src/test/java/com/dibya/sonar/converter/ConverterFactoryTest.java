@@ -7,9 +7,12 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.dibya.infra.converter.AbstractConverter;
+import com.dibya.infra.converter.Converter;
+import com.dibya.infra.converter.ConverterFactory;
+import com.dibya.infra.converter.vo.SourceTargetValue;
 import com.dibya.sonar.converter.adapter.IssueEntityFromIssueConverter;
 import com.dibya.sonar.entity.vo.Issue;
-import com.dibya.sonar.entity.vo.SourceTargetValue;
 
 public class ConverterFactoryTest {
     private ConverterFactory factory;

@@ -8,7 +8,8 @@ import org.apache.log4j.Logger;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
-import com.dibya.sonar.converter.AbstractConverter;
+import com.dibya.infra.converter.AbstractConverter;
+import com.dibya.infra.converter.annotation.Convert;
 import com.dibya.sonar.entity.ScmDetail;
 import com.dibya.sonar.entity.vo.ScmDetails;
 import com.dibya.sonar.entity.vo.wrapper.ScmDetailListWrapper;
@@ -18,46 +19,47 @@ import com.dibya.sonar.entity.vo.wrapper.ScmDetailListWrapper;
  * 
  * @author Dibya Ranjan
  */
+@Convert(source = com.dibya.sonar.entity.vo.ScmDetails.class, target = com.dibya.sonar.entity.vo.wrapper.ScmDetailListWrapper.class)
 public class ScmDetailListWrapperFromScmDetailsConverter extends AbstractConverter {
-    private static final Logger LOGGER = Logger.getLogger(ScmDetailListWrapperFromScmDetailsConverter.class);
-    
-    public ScmDetailListWrapperFromScmDetailsConverter() {
-        LOGGER.info("Registered " + getClass());
-    }
-    
-    @SuppressWarnings("unchecked")
-    @Override
-    protected <T, S> T doConvert(S sourceObject) {
-        ScmDetails source = (ScmDetails) sourceObject;
-        List<ScmDetail> scmDetails = extractScmDetails(source);
-        
-        ScmDetailListWrapper target = new ScmDetailListWrapper();
-        target.setScmDetails(scmDetails);
+	private static final Logger LOGGER = Logger.getLogger(ScmDetailListWrapperFromScmDetailsConverter.class);
 
-        return (T) target;
-    }
+	public ScmDetailListWrapperFromScmDetailsConverter() {
+		LOGGER.info("Registered " + getClass());
+	}
 
-    private List<ScmDetail> extractScmDetails(ScmDetails source) {
-        List<List<String>> scm = source.getScm();
-        DateTimeFormatter fomatter = DateTimeFormat.forPattern("yyyy-MM-dd");
+	@SuppressWarnings("unchecked")
+	@Override
+	protected <T, S> T doConvert(S sourceObject) {
+		ScmDetails source = (ScmDetails) sourceObject;
+		List<ScmDetail> scmDetails = extractScmDetails(source);
 
-        List<ScmDetail> scms = new ArrayList<>();
-        for (List<String> list : scm) {
-            ScmDetail scmDetail = new ScmDetail();
-            Integer lineNumber = Integer.valueOf(list.get(0));
-            String email = list.get(1);
-            String introducedDate = list.get(2);
+		ScmDetailListWrapper target = new ScmDetailListWrapper();
+		target.setScmDetails(scmDetails);
 
-            Date dateIntroduced = fomatter.parseDateTime(introducedDate).toDate();
+		return (T) target;
+	}
 
-            scmDetail.setDateIntroduced(dateIntroduced);
-            scmDetail.setEmail(email);
-            scmDetail.setLineNumber(lineNumber);
+	private List<ScmDetail> extractScmDetails(ScmDetails source) {
+		List<List<String>> scm = source.getScm();
+		DateTimeFormatter fomatter = DateTimeFormat.forPattern("yyyy-MM-dd");
 
-            scms.add(scmDetail);
-        }
+		List<ScmDetail> scms = new ArrayList<>();
+		for (List<String> list : scm) {
+			ScmDetail scmDetail = new ScmDetail();
+			Integer lineNumber = Integer.valueOf(list.get(0));
+			String email = list.get(1);
+			String introducedDate = list.get(2);
 
-        return scms;
-    }
+			Date dateIntroduced = fomatter.parseDateTime(introducedDate).toDate();
+
+			scmDetail.setDateIntroduced(dateIntroduced);
+			scmDetail.setEmail(email);
+			scmDetail.setLineNumber(lineNumber);
+
+			scms.add(scmDetail);
+		}
+
+		return scms;
+	}
 
 }

@@ -11,8 +11,8 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.dibya.infra.converter.Converter;
 import com.dibya.sonar.cache.SourceFileCache;
-import com.dibya.sonar.converter.Converter;
 import com.dibya.sonar.dao.SourceFilePersister;
 import com.dibya.sonar.entity.SourceFile;
 import com.dibya.sonar.entity.util.TimeKeeper;

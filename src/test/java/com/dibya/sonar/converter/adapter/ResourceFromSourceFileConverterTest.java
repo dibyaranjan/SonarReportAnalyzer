@@ -5,7 +5,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.dibya.sonar.converter.AbstractConverter;
+import com.dibya.infra.converter.AbstractConverter;
 import com.dibya.sonar.entity.SourceFile;
 import com.dibya.sonar.entity.vo.Resource;
 

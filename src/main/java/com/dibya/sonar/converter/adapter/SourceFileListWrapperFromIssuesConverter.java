@@ -7,11 +7,13 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
-import com.dibya.sonar.converter.AbstractConverter;
+import com.dibya.infra.converter.AbstractConverter;
+import com.dibya.infra.converter.annotation.Convert;
 import com.dibya.sonar.entity.SourceFile;
 import com.dibya.sonar.entity.vo.Issues;
 import com.dibya.sonar.entity.vo.wrapper.SourceFileListWrapper;
 
+@Convert(source = com.dibya.sonar.entity.vo.Issues.class, target = com.dibya.sonar.entity.vo.wrapper.SourceFileListWrapper.class)
 public class SourceFileListWrapperFromIssuesConverter extends AbstractConverter {
 	private static final Logger LOGGER = Logger.getLogger(SourceFileListWrapperFromIssuesConverter.class);
 
